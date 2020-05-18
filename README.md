@@ -26,17 +26,17 @@ Make sure you familiarize with [the build/test tools](https://nathanielbd.github
 ### Part 2: Components, Styling, and Testing
 
 1. Create a blank project. You can do this at [snack.expo.io](https://snack.expo.io), but I recommend doing this through the expo CLI. Working from the command line will make deployment and github integration much easier.
-2. Open `App.js`, which is the entrypoint to your app.
+2. Open `App.js`, which is the entry point to your app.
 3. Let's start with importing our dependencies
 ```javascript
 import * as React from 'react';
-import { Text, View, FlatList, Button, TextInput, StyleSheet } from 'react-native';
+import { Text, View, FlatList, Button, TextInput, StyleSheet, AsyncStorage, ActivityIndicator } from 'react-native';
 ```
 - We need to import anything that isn't part of the JavaScript language
 - The `*` is pronounced 'wildcard' and means everything in a certain module.
 - The `as` keyword allows you to give a chosen name to the import. This is called aliasing.
 - Unless you're using a library like [react-native-paper](https://github.com/callstack/react-native-paper), you can generally find a component's documentation [here](https://reactnative.dev/docs/components-and-apis#basic-components).
-4. Entrypoint boilerplate or: How I learned to stop pasting boilerplate and remember the syntax
+4. Entry point boilerplate or: How I learned to stop pasting boilerplate and remember the syntax
 ```javascript
 export default class App extends React.Component {
 ...
@@ -50,11 +50,13 @@ export default class App extends React.Component {
 ```javascript
 export default class App extends React.Component {
 	render() {
-		<View>
-			<Text>Todo List</Text>
-			<FlatList/>
-			<TextInput/>
-		</View>
+		return (
+			<View>
+				<Text>Todo List</Text>
+				<FlatList/>
+				<TextInput/>
+			</View>
+		);
 	}
 }
 ```
@@ -73,18 +75,20 @@ export default class App extends React.Component {
 	}
 
 	render() {	
-		<View>
-			<Text>Todo List</Text>
-			<FlatList
-				data={this.state.tasks}
-				renderItem={ ({item, index}) =>
-					<View>
-						<Text>{item.text}</Text>
-					</View>
-				}
-			/>
-			<TextInput/>
-		</View>
+		return (
+			<View>
+				<Text>Todo List</Text>
+				<FlatList
+					data={this.state.tasks}
+					renderItem={ ({item, index}) =>
+						<View>
+							<Text>{item.text}</Text>
+						</View>
+					}
+				/>
+				<TextInput/>
+			</View>
+		);
 	}
 }
 ```
@@ -98,22 +102,24 @@ export default class App extends React.Component {
 export default class App extends React.Component {
 	...
 	render() {
-		<View>
-			<Text style={styles.title}>Todo List</Text>
-			<FlatList
-				style={styles.list}
-				data={this.state.tasks}
-				renderItem={ ({item, index}) =>
-					<View style={styles.item}>
-						<Text style={styles.item}>{item.text}</Text>
-					</View>
-				}
-			/>
-			<TextInput
-				style={styles.item}
-				placeholder="Type to add a task!"	
-			/>
-		</View>
+		return (
+			<View>
+				<Text style={styles.title}>Todo List</Text>
+				<FlatList
+					style={styles.list}
+					data={this.state.tasks}
+					renderItem={ ({item, index}) =>
+						<View style={styles.item}>
+							<Text style={styles.item}>{item.text}</Text>
+						</View>
+					}
+				/>
+				<TextInput
+					style={styles.item}
+					placeholder="Type to add a task!"	
+				/>
+			</View>
+		);
 	}
 }
 
@@ -136,7 +142,7 @@ const styles = StyleSheet.create(
 	}
 )
 ```
-- We use [CSS syntax](https://www.w3schools.com/css/css_intro.asp) for stylesheets.
+- We use [CSS syntax](https://www.w3schools.com/css/css_intro.asp) for style sheets.
 - `flex` is a feature in CSS that's heavily used when designing user interfaces for mobile devices. [This guide](https://reactnative.dev/docs/flexbox) can explain it much better than I can, but it is essentially describing what proportion of the screen a component should cover. For example, if there are two components inside of a `<View>` when one has `flex: 2` and the other has `flex: 1`, then they will cover 2/3 and 1/3 of the view, respectively.
 - The difference between padding and margin is also notoriously confusing. Padding can be described as the distance between the content and the border of a component. Margin can be thought as the distance between the border of a component and the border of another component. The following image illustrates this:
 
@@ -151,7 +157,7 @@ const styles = StyleSheet.create(
 
 - You will know your app is finished building when there's a log saying `Building JavaScript bundle: finished in XXXms` on both the terminal and the browser page.
 - At this point, you may scan the QR code (using the camera app on iOS or the expo app on Android) and you will see the results in the expo app.
-- If you're using snack, you can see the app's output on the right-hand side.
+- If you're using snack, you can see the output for the app on the right-hand side.
 
 ### Part 3: Data Manipulation and State Handling
 
@@ -167,15 +173,17 @@ export default class App extends React.Component {
 	}
 
 	render() {
-		<View>
-			...
-			<TextInput
-				style={styles.item}
-				onChangeText={this.updateText}
-				value={this.state.text}
-				placeholder="Type to add a task!"
-			/>
-		</View>
+		render (
+			<View>
+				...
+				<TextInput
+					style={styles.item}
+					onChangeText={this.updateText}
+					value={this.state.text}
+					placeholder="Type to add a task!"
+				/>
+			</View>
+		);
 	}
 }
 ```
@@ -198,6 +206,7 @@ export default class App extends React.Component {
 	}
 
 	render() {
+		...
 	}
 }
 ```
@@ -227,19 +236,21 @@ addTask = () => {
 - There's a lot going on here. At the top level, we're using `setState` again, but not in the way we used before. Previously, we gave it a JSON object and it would update the state. This time we give it a function which it will evaluate by passing it the previous state. Note that the choice of naming the parameter of the function `prevState` doesn't change the behavior of the program. We could have named the parameter `Charles` and `setState` will still give our function the previous state of `App`.
 - One level down, we define our function. `prevState` is a JavaScript object with two keys. Using the nifty syntax `let { tasks, text } = prevState;`, we can 'unpack' that object so we have two variables in our scope: one for each key.
 - Finally, we have the return statement of our function. The output of our function should be a JavaScript object so that `setState` can update our app's state. 
-- We assign a value to the `tasks` key: `tasks: tasks.concat({ index: tasks.length, text: text })`. The `tasks` on the right-hand side refers to the variable we created when we 'unpacked' the previous state. The `text` on the right-hand side is the other variable created when unpacking. So the value that ends up being associated with the `tasks` key is just the previous state with another object added (concatenated) to the end of the array. We want the `index` of the new object to be equal to the number of stasks above it so that the 2nd element is at index 1 and so on.
+- We assign a value to the `tasks` key: `tasks: tasks.concat({ index: tasks.length, text: text })`. The `tasks` on the right-hand side refers to the variable we created when we 'unpacked' the previous state. The `text` on the right-hand side is the other variable created when unpacking. So the value that ends up being associated with the `tasks` key is just the previous state with another object added (concatenated) to the end of the array. We want the `index` of the new object to be equal to the number of tasks above it so that the 2nd element is at index 1 and so on.
 - We still need to update what's rendered in our app.
 ```javascript
 render() {
-	<View>
-		...
-		<TextInput
+	return (
+		<View>
 			...
-			onSubmitEditing={this.addTask}
-			returnKeyLabel="done"
-			returnKeyType="done"
-		/>
-	</View>
+			<TextInput
+				...
+				onSubmitEditing={this.addTask}
+				returnKeyLabel="done"
+				returnKeyType="done"
+			/>
+		</View>
+	);
 }
 ```
 - `returnKeyLabel` and `returnKeyType` are simply to make the `TextInput` compatible with both Android and iOS. "done" just happens to be an action both platforms support.
@@ -261,7 +272,7 @@ deleteTask = i => {
 }
 
 render() {
-...
+	...
 }
 ```
 - We're using the same approach as `addTask`: giving `setState` a function to evaluate given the previous state.
@@ -292,13 +303,86 @@ And we're done! Test the app out. It should look like [this](https://snack.expo.
 ### Part 4: Persistent Lists using AsyncStorage
 
 - Todo lists aren't very useful if they go away after you exit the app.
+- Let's add some memory to the app that persists between sessions.
+- We'll use [AsyncStorage](https://reactnative.dev/docs/asyncstorage.html) for this. 
+- The 'Async' part of AsyncStorage stands for asynchronous. That means there may be some time delay between when its methods are called and when it will return a response. JavaScript has its own way of dealing with asynchronicity, so we're going to have to learn some new syntax.
+- AsyncStorage is local to the device running the app and every component can see its contents.
+- It organizes its data with key-value pairs, where both of them are strings.
+- Let's make it so that the app pulls from AsyncStorage every time the user opens the app.
+```javascript
+constructor(props) {
+	super(props);
+	this.state = {
+		...
+		loaded: false
+	};
+}
 
-MORE COMING SOON!
+...
+
+deleteTask = i => {
+	...
+} 
+
+async componentDidMount() {
+	await AsyncStorage.getItem("TASKS",
+		(err, item) => {
+			if (item !== null) {
+				this.setState({tasks: JSON.parse(item)});
+			}
+			this.setState({loaded: true});
+		}
+	);
+}
+
+render() {
+	if (!this.state.loaded) {
+		return <ActivityIndicator/>
+	} 
+	...
+}
+```
+- We need to prefix each asynchronous function with the keyword `async`. This allows us to use the keyword `await`, which waits until an asynchronous call can resolve to a value.
+- `componentDidMount` is another special method for components besides `render`. It is called after the constructor and is able to be asynchronous.
+- Since `componentDidMount` is asynchronous and `render` is not, we need to make sure that the incorrect data is not being rendered before the data is updated in `componentDidMount`. We do this by having a `loaded` key in our state that is `false` by default and is only made `true` when `componentDidMount` is finished. In the time that `componentDidMount` takes to finish, `render` will simply display a loading wheel because of `ActivityIndicator`.
+- Note that we reference the key `"TASKS"` before we ever assign a value to that key. When the user opens the app for the first time, the value associated with `"TASKS"` will be `null` or empty. We only update our data if `"TASKS"` has a non-null value.
+- `AsyncStorage.getItem` takes two arguments. The first is which key to look for its value. The second is a function to call when the lookup is complete. That function, called a callback, could handle errors, but we won't be doing that in this rather simple app.
+- This call to `JSON.parse` is a preview of what we will be doing next. `JSON.parse` takes a JSON string and converts it to an object. This bridges the gap between AsyncStorage, which wants a string key to store a string value, and `setState`, which takes an object.
+- Now let's actually allow `"TASKS"` to have a value that can be changed by the user.
+```javascript
+addTask = () => {
+	let isEmpty = this.state.text.trim().length == 0;
+
+	if (!isEmpty) {
+		this.setState(
+			(prevState) => {
+				...
+			},
+			async () => await AsyncStorage.setItem("TASKS", JSON.stringify(this.state.tasks))
+		);
+	}
+}
+
+deleteTask = i => {
+	this.setState(
+		(prevState) => {
+			...
+		},
+		async () => await AsyncStorage.setItem("TASKS", JSON.stringify(this.state.tasks))
+	);
+}
+```
+- Here, we're using an optional argument for `setState`: a function to call after setting the state. The function is another example of a callback.
+- Our callback is asynchronous and is what's updating AsyncStorage with the tasks being added and deleted. Since `state` is an object, we need to call `JSON.stringify` to turn it in a string so that AsyncStorage can store it.
+- `AsyncStorage.setItem` takes two arguments: the string key and the string value with to which associate it
+- Now, when the user adds or deletes a task, AsyncStorage will see this and update its data. Remembering back to what we did earlier with `componentDidMount`, the value associated with `"TASK"` will no longer be `null`. When the user closes the app and opens it again, `componentDidMount` will see that there is saved data under `"TASKS"` and change what will eventually be rendered for the user.
+- Try looking at the code we just wrote and see if you can find which line support the each step of reasoning in the above bullet point.
+- That's it! We now have a working todo list app that's actually usable!
 
 ### Part 5: Deployment to Google Play Store
 
-- Make sure the app works by running `expo start` and trying it out on your smartphone. You can also import your code to [snack.expo.io](https://snack.expo.io) to test on android if you don't have an android device.
-- The following steps are based off of Expo's documentation on [building](https://docs.expo.io/versions/latest/distribution/building-standalone-apps/) and [deploying](https://docs.expo.io/versions/latest/distribution/app-stores/). You should consult these if something goes wrong.
+- Make sure the app works by running `expo start` and trying it out on your phone. You can also import your code to [snack.expo.io](https://snack.expo.io) to test on android if you don't have an android device.
+- The following steps are based off of Expo's documentation on [building](https://docs.expo.io/versions/latest/distribution/building-standalone-apps/), [uploading](https://docs.expo.io/versions/latest/distribution/uploading-apps/), and [deploying](https://docs.expo.io/versions/latest/distribution/app-stores/). You should consult these if something goes wrong.
 - Run `expo publish`. This uploads your code to Expo's content delivery network (CDN) for hosting. Go to the URL it outputs and save the address bar to your clipboard.
 - Let's configure our `app.json` for the Google Play Store
 ```
@@ -325,15 +409,16 @@ MORE COMING SOON!
 }
 ```
 - `name`, `icon`, and `version` are required
-- Under `slug`, you should paste the CDN url of the code you published. It should look like `https://expo.io/@username/project`.
-- 
-
-MORE COMING SOON!
+- Under `slug`, you should paste the CDN url of the code you published. It should look like `https://expo.io/@username/project`. 
+- This should be all you need to publish an app on the Google Play Store. Make sure you have tested your app on your android device or the android simulator on [snack](https://snack.expo.io). 
+- Run `expo build:android`
+- Next, upload the executable files built from the previous step to the Google Play Console. This requires a [Google Play Developer account](https://play.google.com/apps/publish/signup/) and $25. Follow [this guide](https://docs.expo.io/versions/latest/distribution/uploading-apps/#21-if-you-choose-to-upload-your) for help uploading.
+- Enjoy your todo list as well as your new React Native skills and knowledge!
 
 ---
 
 Adapted from [todo app with react native](https://codeburst.io/todo-app-with-react-native-f889e97e398e)
 
-Last updated: 03/26/2020
+Last updated: 04/12/2020
 
 Run `git pull` to update
