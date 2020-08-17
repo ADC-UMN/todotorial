@@ -8,7 +8,7 @@ Right here.
 
 ### Part 0: Getting this repo on your computer
 
-1. [Get familiar with git and Github if you aren't already!](https://nathanielbd.github.io/blog/git-familiar-with-git)
+1. [Get familiar with git and Github if you aren't already!](https://github.com/SASE-Labs-2020/tutorials/blob/master/2020-01-30-git-familiar-with-git.md)
 2. Clone this repo. You can do this by running `git clone https://github.umn.edu/app-developers-club/react-native-todo`. Then you can type `cd react-native-todo` and all of this will be in your working directory!
 3. Follow the rest of this tutorial.
 4. If you think you made a mistake, check out the `src` directory for the completed project.
@@ -17,7 +17,7 @@ Right here.
 
 ### Part 1: Prerequisites
 
-Make sure you familiarize with [the build/test tools](https://nathanielbd.github.io/blog/getting-started-with-react-native) as well as [the basics of React Native](https://nathanielbd.github.io/blog/react-native-basics) before getting started.
+Make sure you familiarize with [the build/test tools](https://github.com/SASE-Labs-2020/tutorials/blob/master/2019-11-20-getting-started-with-react-native.md) as well as [the basics of React Native](https://github.com/SASE-Labs-2020/tutorials/blob/master/2019-11-22-react-native-basics.md) before getting started.
 
 - How do you create a blank project?
 - Can you change a headline on [news.google.com](https://news.google.com) to make it seem like a headline from The Onion and change its link to rickroll when clicked? (Hint: the `href` attribute of an `a` tag controls the destination of a link)
