@@ -10,5 +10,15 @@ npm-debug.*
 web-build/
 web-report/
 
+# latex
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+
 # macOS
 .DS_Store
