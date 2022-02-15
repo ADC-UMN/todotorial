@@ -304,7 +304,7 @@ And we're done! Test the app out. It should look like [this](https://snack.expo.
 
 - Todo lists aren't very useful if they go away after you exit the app.
 - Let's add some memory to the app that persists between sessions.
-- We'll use [AsyncStorage](https://reactnative.dev/docs/asyncstorage.html) for this. 
+- We'll use [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) for this. 
 - The 'Async' part of AsyncStorage stands for asynchronous. That means there may be some time delay between when its methods are called and when it will return a response. JavaScript has its own way of dealing with asynchronicity, so we're going to have to learn some new syntax.
 - AsyncStorage is local to the device running the app and every component can see its contents.
 - It organizes its data with key-value pairs, where both of them are strings.
@@ -325,13 +325,11 @@ deleteTask = i => {
 } 
 
 async componentDidMount() {
-	await AsyncStorage.getItem("TASKS",
-		(err, item) => {
-			if (item !== null) {
-				this.setState({tasks: JSON.parse(item)});
-			}
-			this.setState({loaded: true});
+	const items = await AsyncStorage.getItem("TASKS");
+		if (items !== null) {
+			this.setState({tasks: JSON.parse(items)});
 		}
+		this.setState({loaded: true});
 	);
 }
 
