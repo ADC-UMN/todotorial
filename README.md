@@ -380,43 +380,14 @@ deleteTask = i => {
 ### Part 5: Deployment to Google Play Store
 
 - Make sure the app works by running `expo start` and trying it out on your phone. You can also import your code to [snack.expo.io](https://snack.expo.io) to test on android if you don't have an android device.
-- The following steps are based off of Expo's documentation on [building](https://docs.expo.io/versions/latest/distribution/building-standalone-apps/), [uploading](https://docs.expo.io/versions/latest/distribution/uploading-apps/), and [deploying](https://docs.expo.io/versions/latest/distribution/app-stores/). You should consult these if something goes wrong.
-- Run `expo publish`. This uploads your code to Expo's content delivery network (CDN) for hosting. Go to the URL it outputs and save the address bar to your clipboard.
-- Let's configure our `app.json` for the Google Play Store
-```
-{
-  "expo": {
-    "name": "todotorial",
-    "description": "Todo list",
-    "slug": "https://expo.io/@nathanielbd/snack-f66219c2-eb0d-44c2-9d03-166dd07f8c52",
-    "sdkVersion": "36.0.0",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "primaryColor": "#cccccc",
-    "icon": "https://d1wp6m56sqw74a.cloudfront.net/~assets/c9aa1be8a6a6fe81e20c3ac4106a2ebc",
-    "ios": {
-      "bundleIdentifier": "com.adc.todotorial",
-      "bundleNumber": "1.0.0",
-      "supportsTablet": true
-    },
-    "android": {
-      "package": "com.adc.todotorial",
-      "versionCode": 1
-    }
-  }
-}
-```
-- `name`, `icon`, and `version` are required
-- Under `slug`, you should paste the CDN url of the code you published. It should look like `https://expo.io/@username/project`. 
-- This should be all you need to publish an app on the Google Play Store. Make sure you have tested your app on your android device or the android simulator on [snack](https://snack.expo.io). 
-- Run `expo build:android`
-- Next, upload the executable files built from the previous step to the Google Play Console. This requires a [Google Play Developer account](https://play.google.com/apps/publish/signup/) and $25. Follow [this guide](https://docs.expo.io/versions/latest/distribution/uploading-apps/#21-if-you-choose-to-upload-your) for help uploading.
+- Follow the steps of Expo's documentation on [building](https://docs.expo.dev/classic/building-standalone-apps/) and [uploading](https://docs.expo.dev/distribution/uploading-apps/), and [deploying](https://docs.expo.io/versions/latest/distribution/app-stores/). You should consult these if something goes wrong.
+- A previous version of this guide used the `expo build` system; please use the EAS CLI build system instead.
 - Enjoy your todo list as well as your new React Native skills and knowledge!
 
 ---
 
 Adapted from [todo app with react native](https://codeburst.io/todo-app-with-react-native-f889e97e398e)
 
-Last updated: 04/12/2020
+Last updated: 02/23/2022
 
 Run `git pull` to update
